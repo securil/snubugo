@@ -10,13 +10,16 @@ import {
   Maximize,
   Minimize,
   Home,
-  BookOpen
+  BookOpen,
+  Columns,
+  FileText
 } from 'lucide-react';
 
 const ViewerControls: React.FC = () => {
   const navigate = useNavigate();
   const { 
     currentBook, 
+    currentMagazine,
     viewerState, 
     nextPage, 
     prevPage, 
@@ -29,6 +32,8 @@ const ViewerControls: React.FC = () => {
 
   const [showPageInput, setShowPageInput] = useState(false);
   const [pageInputValue, setPageInputValue] = useState('');
+
+  const currentItem = currentMagazine || currentBook;
 
   const handlePageInputSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +55,7 @@ const ViewerControls: React.FC = () => {
     }
   };
 
-  if (!currentBook) return null;
+  if (!currentItem) return null;
 
   return (
     <div className="bg-gray-800 text-white p-4 border-b border-gray-700">
@@ -67,8 +72,13 @@ const ViewerControls: React.FC = () => {
           
           <div className="flex items-center space-x-2">
             <BookOpen size={20} className="text-blue-400" />
-            <h2 className="text-lg font-semibold">{currentBook.title}</h2>
-            <span className="text-gray-400">by {currentBook.author}</span>
+            <h2 className="text-lg font-semibold">{currentItem.title}</h2>
+            <span className="text-gray-400">
+              {currentMagazine ? 
+                `${currentMagazine.year}년 ${currentMagazine.season}호` : 
+                `by ${(currentItem as any).author || '작가 미상'}`
+              }
+            </span>
           </div>
         </div>
 
@@ -76,6 +86,33 @@ const ViewerControls: React.FC = () => {
           <span className="text-sm text-gray-400">
             {Math.round(viewerState.scale * 100)}%
           </span>
+          
+          {/* 뷰 모드 전환 버튼 */}
+          <div className="flex rounded-lg overflow-hidden border border-gray-600">
+            <button
+              onClick={() => useBookStore.getState().setViewMode('single')}
+              className={`p-2 transition-colors ${
+                viewerState.viewMode === 'single' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-gray-700 hover:bg-gray-600'
+              }`}
+              title="단일 페이지 보기"
+            >
+              <FileText size={20} />
+            </button>
+            <button
+              onClick={() => useBookStore.getState().setViewMode('double')}
+              className={`p-2 transition-colors ${
+                viewerState.viewMode === 'double' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-gray-700 hover:bg-gray-600'
+              }`}
+              title="2페이지 보기"
+            >
+              <Columns size={20} />
+            </button>
+          </div>
+
           <button
             onClick={toggleFullscreen}
             className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
@@ -124,7 +161,11 @@ const ViewerControls: React.FC = () => {
               title="페이지로 이동"
             >
               <span className="font-mono">
-                {viewerState.currentPage} / {viewerState.totalPages}
+                {viewerState.viewMode === 'double' && viewerState.currentPage + 1 <= viewerState.totalPages ? (
+                  `${viewerState.currentPage}-${viewerState.currentPage + 1} / ${viewerState.totalPages}`
+                ) : (
+                  `${viewerState.currentPage} / ${viewerState.totalPages}`
+                )}
               </span>
             </button>
           )}
@@ -171,7 +212,7 @@ const ViewerControls: React.FC = () => {
 
       {/* 키보드 단축키 힌트 */}
       <div className="mt-2 text-xs text-gray-400 text-center">
-        키보드: ←→ 페이지 이동, Space 다음 페이지, Esc 홈으로, Home/End 처음/끝 페이지
+        키보드: ←→ 페이지 이동, Space 다음 페이지, Esc 홈으로, Home/End 처음/끝 페이지, Ctrl+1/2 보기모드 전환
       </div>
     </div>
   );
