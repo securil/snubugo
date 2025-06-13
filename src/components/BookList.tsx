@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useBookStore } from '../store/bookStore';
 import { BookOpen, Calendar, Tag, FileText } from 'lucide-react';
+import AutoThumbnail from './AutoThumbnail';
 
 const BookList: React.FC = () => {
   const { books } = useBookStore();
+  const [, setGeneratedThumbnails] = useState<Record<string, string>>({});
+
+  const handleThumbnailGenerated = (bookId: string, thumbnail: string) => {
+    setGeneratedThumbnails(prev => ({
+      ...prev,
+      [bookId]: thumbnail
+    }));
+  };
 
   if (books.length === 0) {
     return (
@@ -27,21 +36,10 @@ const BookList: React.FC = () => {
         {books.map((book) => (
           <div key={book.id} className="card hover:shadow-lg transition-shadow duration-300">
             <div className="aspect-[3/4] bg-gray-200 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
-              {book.coverImage ? (
-                <img 
-                  src={book.coverImage} 
-                  alt={book.title}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                  }}
-                />
-              ) : null}
-              <div className="flex flex-col items-center text-gray-400">
-                <BookOpen size={48} />
-                <span className="text-sm mt-2">표지 없음</span>
-              </div>
+              <AutoThumbnail 
+                book={book} 
+                onThumbnailGenerated={handleThumbnailGenerated}
+              />
             </div>
             
             <div className="space-y-2">
