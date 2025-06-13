@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useBookStore } from './store/bookStore';
 import BookList from './components/BookList';
@@ -6,7 +6,7 @@ import PDFViewer from './components/PDFViewer';
 import Header from './components/Header';
 
 function App() {
-  const { setBooks, currentBook } = useBookStore();
+  const { setBooks } = useBookStore();
 
   useEffect(() => {
     // metadata.json에서 책 정보 로드

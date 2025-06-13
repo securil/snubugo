@@ -10,8 +10,7 @@ import {
   Maximize,
   Minimize,
   Home,
-  BookOpen,
-  Settings
+  BookOpen
 } from 'lucide-react';
 
 const ViewerControls: React.FC = () => {
