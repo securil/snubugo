@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>썸네일 생성기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .thumbnail-preview {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        .thumbnail {
+            width: 150px;
+            height: 200px;
+            border: 1px solid #ddd;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .season-spring { background: linear-gradient(135deg, #a8e6cf 0%, #4ecdc4 100%); }
+        .season-summer { background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%); }
+        .season-fall { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .season-winter { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>동창회보 썸네일 생성기</h1>
+        <p>아래 버튼을 클릭하여 각 동창회보의 썸네일을 다운로드하세요.</p>
+        
+        <div id="thumbnails"></div>
+        
+        <button onclick="downloadAllThumbnails()">모든 썸네일 다운로드</button>
+    </div>
+
+    <script>
+        const magazines = [
+            { id: "2025-summer-131", year: 2025, season: "여름", issue: 131 },
+            { id: "2024-winter-130", year: 2024, season: "겨울", issue: 130 },
+            { id: "2024-fall-129", year: 2024, season: "가을", issue: 129 },
+            { id: "2024-summer-128", year: 2024, season: "여름", issue: 128 },
+            { id: "2024-spring-127", year: 2024, season: "봄", issue: 127 },
+            { id: "2023-winter-126", year: 2023, season: "겨울", issue: 126 },
+            { id: "2023-fall-125", year: 2023, season: "가을", issue: 125 },
+            { id: "2023-summer-124", year: 2023, season: "여름", issue: 124 },
+            { id: "2023-spring-123", year: 2023, season: "봄", issue: 123 },
+            { id: "2022-winter-122", year: 2022, season: "겨울", issue: 122 },
+            { id: "2022-fall-121", year: 2022, season: "가을", issue: 121 },
+            { id: "2022-summer-120", year: 2022, season: "여름", issue: 120 },
+            { id: "2022-spring-119", year: 2022, season: "봄", issue: 119 },
+            { id: "2021-fall-118", year: 2021, season: "가을", issue: 118 },
+            { id: "2021-summer-117", year: 2021, season: "여름", issue: 117 },
+            { id: "2021-spring-116", year: 2021, season: "봄", issue: 116 }
+        ];
+
+        function getSeasonClass(season) {
+            const seasonMap = {
+                '봄': 'season-spring',
+                '여름': 'season-summer', 
+                '가을': 'season-fall',
+                '겨울': 'season-winter'
+            };
+            return seasonMap[season] || '';
+        }
+
+        function createThumbnail(magazine) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 300;
+            canvas.height = 400;
+            const ctx = canvas.getContext('2d');
+
+            // 배경 그라디언트
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            
+            switch(magazine.season) {
+                case '봄':
+                    gradient.addColorStop(0, '#a8e6cf');
+                    gradient.addColorStop(1, '#4ecdc4');
+                    break;
+                case '여름':
+                    gradient.addColorStop(0, '#ffd89b');
+                    gradient.addColorStop(1, '#19547b');
+                    break;
+                case '가을':
+                    gradient.addColorStop(0, '#f093fb');
+                    gradient.addColorStop(1, '#f5576c');
+                    break;
+                case '겨울':
+                    gradient.addColorStop(0, '#4facfe');
+                    gradient.addColorStop(1, '#00f2fe');
+                    break;
+                default:
+                    gradient.addColorStop(0, '#667eea');
+                    gradient.addColorStop(1, '#764ba2');
+            }
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 텍스트 설정
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 2;
+            ctx.shadowOffsetX = 1;
+            ctx.shadowOffsetY = 1;
+
+            // 제목
+            ctx.font = 'bold 24px Arial';
+            ctx.fillText('서울사대부고', canvas.width/2, 80);
+            ctx.fillText('동창회보', canvas.width/2, 110);
+
+            // 호수
+            ctx.font = 'bold 48px Arial';
+            ctx.fillText(`${magazine.issue}호`, canvas.width/2, 180);
+
+            // 연도와 계절
+            ctx.font = 'bold 20px Arial';
+            ctx.fillText(`${magazine.year}년`, canvas.width/2, 250);
+            ctx.fillText(`${magazine.season}호`, canvas.width/2, 280);
+
+            // 하단 라인
+            ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height - 50);
+            ctx.lineTo(canvas.width - 50, canvas.height - 50);
+            ctx.stroke();
+
+            return canvas.toDataURL('image/jpeg', 0.85);
+        }
+
+        function downloadThumbnail(magazine) {
+            const dataURL = createThumbnail(magazine);
+            const link = document.createElement('a');
+            link.download = `${magazine.id}.jpg`;
+            link.href = dataURL;
+            link.click();
+        }
+
+        function downloadAllThumbnails() {
+            magazines.forEach((magazine, index) => {
+                setTimeout(() => {
+                    downloadThumbnail(magazine);
+                }, index * 500); // 0.5초 간격으로 다운로드
+            });
+        }
+
+        // 썸네일 미리보기 생성
+        function generatePreviews() {
+            const container = document.getElementById('thumbnails');
+            
+            magazines.forEach(magazine => {
+                const preview = document.createElement('div');
+                preview.className = 'thumbnail-preview';
+                
+                const thumbnail = document.createElement('div');
+                thumbnail.className = `thumbnail ${getSeasonClass(magazine.season)}`;
+                thumbnail.innerHTML = `
+                    <div>서울사대부고</div>
+                    <div>동창회보</div>
+                    <div style="font-size: 20px; margin: 10px 0;">${magazine.issue}호</div>
+                    <div>${magazine.year}년</div>
+                    <div>${magazine.season}호</div>
+                `;
+                
+                const button = document.createElement('button');
+                button.textContent = '다운로드';
+                button.onclick = () => downloadThumbnail(magazine);
+                
+                const label = document.createElement('div');
+                label.textContent = magazine.id;
+                label.style.fontSize = '12px';
+                label.style.marginTop = '5px';
+                
+                preview.appendChild(thumbnail);
+                preview.appendChild(button);
+                preview.appendChild(label);
+                container.appendChild(preview);
+            });
+        }
+
+        // 페이지 로드 시 미리보기 생성
+        generatePreviews();
+    </script>
+</body>
+</html>

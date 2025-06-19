@@ -65,9 +65,18 @@ const MagazineList: React.FC = () => {
       <div className="aspect-[3/4] bg-gray-200 rounded-lg mb-4 overflow-hidden relative">
         <AutoThumbnail 
           book={{
-            ...magazine,
+            id: magazine.id,
+            title: magazine.title,
             author: '서울사대부고 동창회',
-          }} 
+            description: magazine.description,
+            coverImage: magazine.coverImage,
+            pdfPath: magazine.pdfPath,
+            pageCount: magazine.pageCount,
+            category: magazine.category,
+            publishDate: magazine.publishDate,
+            tags: magazine.tags,
+            fileSize: magazine.fileSize
+          }}
         />
         
         {/* 호버 오버레이 */}

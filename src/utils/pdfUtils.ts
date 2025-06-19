@@ -8,67 +8,47 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 /**
  * PDF 파일의 첫 번째 페이지를 캔버스로 렌더링하여 이미지 데이터를 생성
+ * @deprecated 미리 준비된 썸네일 사용으로 인해 비활성화됨
  */
 export const generatePdfThumbnail = async (
   pdfPath: string, 
   width: number = 300,
   height: number = 400
 ): Promise<string | null> => {
-  try {
-    // PDF 로드
-    const loadingTask = pdfjs.getDocument(pdfPath);
-    const pdf = await loadingTask.promise;
-    
-    // 첫 번째 페이지 가져오기
-    const page = await pdf.getPage(1);
-    
-    // 뷰포트 설정 (표지 크기에 맞춤)
-    const viewport = page.getViewport({ scale: 1 });
-    const scale = Math.min(width / viewport.width, height / viewport.height);
-    const scaledViewport = page.getViewport({ scale });
-    
-    // 캔버스 생성
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    
-    if (!context) {
-      throw new Error('Canvas context를 생성할 수 없습니다.');
-    }
-    
-    canvas.width = scaledViewport.width;
-    canvas.height = scaledViewport.height;
-    
-    // 배경을 흰색으로 설정
-    context.fillStyle = 'white';
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // PDF 페이지 렌더링
-    const renderContext = {
-      canvasContext: context,
-      viewport: scaledViewport,
-    };
-    
-    await page.render(renderContext).promise;
-    
-    // Canvas를 Data URL로 변환
-    return canvas.toDataURL('image/jpeg', 0.8);
-    
-  } catch (error) {
-    console.error('PDF 썸네일 생성 실패:', error);
-    return null;
-  }
+  console.warn('generatePdfThumbnail 함수가 호출되었지만 비활성화되어 있습니다. 미리 준비된 썸네일을 사용하세요.');
+  console.warn(`비활성화된 호출: ${pdfPath}`);
+  return null;
 };
 
 /**
  * PDF 파일 정보 추출 (페이지 수, 메타데이터 등)
+ * 이 함수는 계속 사용됩니다.
  */
 export const extractPdfInfo = async (pdfPath: string) => {
   try {
-    const loadingTask = pdfjs.getDocument(pdfPath);
-    const pdf = await loadingTask.promise;
+    // URL 인코딩 처리
+    const encodedPath = encodeURI(pdfPath);
+    console.log(`PDF 정보 추출 시도: ${encodedPath}`);
     
+    // 파일 존재 여부 확인
+    const response = await fetch(encodedPath, { method: 'HEAD' });
+    if (!response.ok) {
+      throw new Error(`PDF 파일을 찾을 수 없습니다: ${pdfPath} (${response.status})`);
+    }
+    
+    const loadingTask = pdfjs.getDocument({
+      url: encodedPath,
+      verbosity: 0,
+    });
+    
+    const pdf = await loadingTask.promise;
     const metadata = await pdf.getMetadata();
-    const info = metadata.info as any; // PDF 메타데이터 타입이 복잡하므로 any 사용
+    const info = metadata.info as any;
+    
+    console.log(`PDF 정보 추출 완료: ${pdfPath}`, {
+      pages: pdf.numPages,
+      title: info?.Title
+    });
     
     return {
       numPages: pdf.numPages,
@@ -81,7 +61,7 @@ export const extractPdfInfo = async (pdfPath: string) => {
       modificationDate: info?.ModDate || null,
     };
   } catch (error) {
-    console.error('PDF 정보 추출 실패:', error);
+    console.error(`PDF 정보 추출 실패 (${pdfPath}):`, error);
     return null;
   }
 };
@@ -101,20 +81,28 @@ export const formatFileSize = (bytes: number): string => {
  */
 export const getPdfFileSize = async (pdfPath: string): Promise<string> => {
   try {
-    const response = await fetch(pdfPath, { method: 'HEAD' });
+    // URL 인코딩 처리
+    const encodedPath = encodeURI(pdfPath);
+    console.log(`파일 크기 확인 시도: ${encodedPath}`);
+    
+    const response = await fetch(encodedPath, { method: 'HEAD' });
     const contentLength = response.headers.get('content-length');
     
     if (contentLength) {
-      return formatFileSize(parseInt(contentLength));
+      const size = formatFileSize(parseInt(contentLength));
+      console.log(`파일 크기 확인 완료: ${pdfPath} = ${size}`);
+      return size;
     }
     
     // HEAD 요청이 실패하면 GET 요청으로 전체 파일 크기 확인
-    const fullResponse = await fetch(pdfPath);
+    const fullResponse = await fetch(encodedPath);
     const blob = await fullResponse.blob();
-    return formatFileSize(blob.size);
+    const size = formatFileSize(blob.size);
+    console.log(`파일 크기 확인 완료 (전체 다운로드): ${pdfPath} = ${size}`);
+    return size;
     
   } catch (error) {
-    console.error('파일 크기 가져오기 실패:', error);
+    console.error(`파일 크기 가져오기 실패 (${pdfPath}):`, error);
     return '알 수 없음';
   }
 };
