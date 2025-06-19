@@ -178,7 +178,7 @@ const AutoThumbnail: React.FC<AutoThumbnailProps> = ({ book, onThumbnailGenerate
           }}
         />
         {/* 개발 모드에서 디버그 정보 표시 */}
-        {process.env.NODE_ENV === 'development' && (
+        {(import.meta as any).env?.DEV && (
           <div className="absolute bottom-0 left-0 right-0 bg-green-500 bg-opacity-75 text-white text-xs p-1">
             ✅ {thumbnailPath.split('/').pop()}
           </div>
@@ -197,7 +197,7 @@ const AutoThumbnail: React.FC<AutoThumbnailProps> = ({ book, onThumbnailGenerate
       <span className="text-xs text-red-300 mt-1 text-center px-2 break-all">
         {debugInfo}
       </span>
-      {process.env.NODE_ENV === 'development' && (
+      {(import.meta as any).env?.DEV && (
         <>
           <span className="text-xs text-red-300 mt-1 text-center px-2 break-all">
             파일: {book.pdfPath.split('/').pop()?.replace('.pdf', '')}

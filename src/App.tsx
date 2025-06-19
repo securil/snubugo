@@ -6,7 +6,7 @@ import MagazineList from './components/MagazineList';
 import MagazineViewer from './components/MagazineViewer';
 import PdfTest from './components/PdfTest';
 import Header from './components/Header';
-import { Book, Magazine, MagazineData } from './types';
+// import { Book, Magazine, MagazineData } from './types'; // 사용하지 않으므로 주석 처리
 
 function App() {
   const { setBooks, setMagazines, setSettings } = useBookStore();
@@ -18,7 +18,7 @@ function App() {
       try {
         // 동창회보 데이터 로드
         const magazineResponse = await fetch('/pdf-ebook-viewer/magazines.json');
-        const magazineData: MagazineData = await magazineResponse.json();
+        const magazineData: any = await magazineResponse.json();
         
         setSettings(magazineData.settings);
         setMagazines(magazineData.magazines); // 정적 데이터 그대로 사용

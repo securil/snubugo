@@ -13,7 +13,7 @@ interface PdfThumbnailState {
  * 미리 준비된 썸네일을 사용하므로 이 훅은 더 이상 사용되지 않음
  * @deprecated 미리 준비된 썸네일 사용으로 인해 비활성화됨
  */
-export const usePdfThumbnail = (pdfPath: string) => {
+export const usePdfThumbnail = (_pdfPath: string) => {
   const [state] = useState<PdfThumbnailState>({
     thumbnail: null,
     isLoading: false,

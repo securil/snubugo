@@ -11,12 +11,12 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
  * @deprecated 미리 준비된 썸네일 사용으로 인해 비활성화됨
  */
 export const generatePdfThumbnail = async (
-  pdfPath: string, 
-  width: number = 300,
-  height: number = 400
+  _pdfPath: string, 
+  _width: number = 300,
+  _height: number = 400
 ): Promise<string | null> => {
   console.warn('generatePdfThumbnail 함수가 호출되었지만 비활성화되어 있습니다. 미리 준비된 썸네일을 사용하세요.');
-  console.warn(`비활성화된 호출: ${pdfPath}`);
+  console.warn(`비활성화된 호출: ${_pdfPath}`);
   return null;
 };
 
