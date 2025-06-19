@@ -1,0 +1,56 @@
+{
+  "books": [
+    {
+      "id": "react-guide",
+      "title": "React 개발 가이드",
+      "author": "김개발",
+      "description": "React를 이용한 모던 웹 개발에 대한 종합 가이드입니다. 기초부터 고급 패턴까지 다룹니다.",
+      "coverImage": "/covers/react-guide.svg",
+      "pdfPath": "/pdfs/react-guide.pdf",
+      "pageCount": 3,
+      "category": "기술",
+      "publishDate": "2024-01-15",
+      "tags": ["React", "JavaScript", "Web Development", "Frontend"],
+      "fileSize": "5.2MB"
+    },
+    {
+      "id": "typescript-master",
+      "title": "TypeScript 마스터하기",
+      "author": "이타입",
+      "description": "TypeScript의 모든 것을 학습할 수 있는 완벽한 가이드북입니다.",
+      "coverImage": "/covers/typescript-master.svg", 
+      "pdfPath": "/pdfs/typescript-master.pdf",
+      "pageCount": 2,
+      "category": "기술",
+      "publishDate": "2024-02-20",
+      "tags": ["TypeScript", "JavaScript", "Type Safety"],
+      "fileSize": "3.8MB"
+    },
+    {
+      "id": "web-design",
+      "title": "모던 웹 디자인",
+      "author": "박디자인",
+      "description": "최신 웹 디자인 트렌드와 실무 적용 방법을 소개합니다.",
+      "coverImage": "/covers/web-design.svg",
+      "pdfPath": "/pdfs/web-design.pdf", 
+      "pageCount": 1,
+      "category": "디자인",
+      "publishDate": "2024-03-10",
+      "tags": ["Web Design", "UI/UX", "CSS", "Design System"],
+      "fileSize": "4.1MB"
+    },
+    {
+      "id": "seoul-school-magazine-131",
+      "title": "2025년 131호-서울사대부고 여름호",
+      "author": "서울사대부고",
+      "description": "서울사대부고 학교 소식지 2025년 여름호입니다.",
+      "coverImage": "auto-generated",
+      "pdfPath": "/pdfs/2025년 131호-서울사대부고 여름호.pdf",
+      "pageCount": 0,
+      "category": "학교소식",
+      "publishDate": "2025-06-01",
+      "tags": ["학교소식", "서울사대부고", "여름호"],
+      "fileSize": "알 수 없음"
+    }
+  ]
+}
